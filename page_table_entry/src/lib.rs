@@ -26,6 +26,10 @@ bitflags::bitflags! {
         const DEVICE        = 1 << 4;
         /// The memory is uncached.
         const UNCACHED      = 1 << 5;
+
+        #[cfg(feature = "cow")]
+        /// Copy-on-write.
+        const COW           = 1 << 6;
     }
 }
 
@@ -53,6 +57,9 @@ pub trait GenericPTE: Debug + Clone + Copy + Sync + Send + Sized {
     fn set_paddr(&mut self, paddr: PhysAddr);
     /// Set flags of the entry.
     fn set_flags(&mut self, flags: MappingFlags, is_huge: bool);
+
+    /// Set flags with arch specific implementation.
+    fn set_flags_arch(&mut self, flags: PTEFlags);
 
     /// Returns the raw bits of this entry.
     fn bits(self) -> usize;

@@ -3,9 +3,14 @@ pub mod x86_64;
 
 #[cfg(any(target_arch = "riscv32", target_arch = "riscv64", doc))]
 pub mod riscv;
+#[cfg(any(target_arch = "riscv32", target_arch = "riscv64", doc))]
+pub use riscv::PTEFlags;
+
 
 #[cfg(any(target_arch = "aarch64", doc))]
 pub mod aarch64;
 
 #[cfg(any(target_arch = "loongarch64", doc))]
 pub mod loongarch64;
+#[cfg(any(target_arch = "loongarch64", doc))]
+pub use loongarch64::PTEFlags;

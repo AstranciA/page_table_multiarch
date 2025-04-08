@@ -2,7 +2,8 @@
 name = "page_table_multiarch"
 description = "Generic page table structures for various hardware architectures"
 documentation = "https://docs.rs/page_table_multiarch"
-version.workspace = true
+version = "0.5.4"
+#version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
@@ -10,7 +11,7 @@ homepage.workspace = true
 repository.workspace = true
 keywords.workspace = true
 categories.workspace = true
-rust-version.workspace = true
+#rust-version.workspace = true
 
 [dependencies]
 log = "0.4"

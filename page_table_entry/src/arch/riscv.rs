@@ -27,6 +27,9 @@ bitflags::bitflags! {
         /// Indicates the virtual page has been written since the last time the
         /// D bit was cleared.
         const D =   1 << 7;
+        /// Two bits reserved for supervisor software, e.g. COW
+        const RSW1 = 1 << 8;
+        const RSW2 = 1 << 8;
     }
 }
 
@@ -47,6 +50,10 @@ impl From<PTEFlags> for MappingFlags {
         }
         if f.contains(PTEFlags::U) {
             ret |= Self::USER;
+        }
+        #[cfg(feature = "cow")]
+        if f.contains(PTEFlags::RSW1) {
+            ret |= Self::COW;
         }
         ret
     }
@@ -69,6 +76,10 @@ impl From<MappingFlags> for PTEFlags {
         }
         if f.contains(MappingFlags::USER) {
             ret |= Self::U;
+        }
+        #[cfg(feature = "cow")]
+        if f.contains(MappingFlags::COW) {
+            ret |= Self::RSW1;
         }
         ret
     }
@@ -108,7 +119,11 @@ impl GenericPTE for Rv64PTE {
             | ((paddr.as_usize() as u64 >> 2) & Self::PHYS_ADDR_MASK);
     }
     fn set_flags(&mut self, flags: MappingFlags, _is_huge: bool) {
-        let flags = PTEFlags::from(flags) | PTEFlags::A | PTEFlags::D;
+        self.set_flags_arch(flags.into())
+    }
+
+    fn set_flags_arch(&mut self, flags: PTEFlags) {
+        let flags = flags | PTEFlags::A | PTEFlags::D;
         debug_assert!(flags.intersects(PTEFlags::R | PTEFlags::X));
         self.0 = (self.0 & Self::PHYS_ADDR_MASK) | flags.bits() as u64;
     }
