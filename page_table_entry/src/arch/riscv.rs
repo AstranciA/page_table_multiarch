@@ -51,7 +51,7 @@ impl From<PTEFlags> for MappingFlags {
         if f.contains(PTEFlags::U) {
             ret |= Self::USER;
         }
-        #[cfg(feature = "cow")]
+        #[cfg(feature = "COW")]
         if f.contains(PTEFlags::RSW1) {
             ret |= Self::COW;
         }
@@ -77,7 +77,7 @@ impl From<MappingFlags> for PTEFlags {
         if f.contains(MappingFlags::USER) {
             ret |= Self::U;
         }
-        #[cfg(feature = "cow")]
+        #[cfg(feature = "COW")]
         if f.contains(MappingFlags::COW) {
             ret |= Self::RSW1;
         }

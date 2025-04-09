@@ -14,9 +14,9 @@ categories.workspace = true
 #rust-version.workspace = true
 
 [features]
-default = ["cow"]
+default = ["COW"]
 arm-el2 = []
-cow = []
+COW = []
 
 [dependencies]
 bitflags = "2.6"

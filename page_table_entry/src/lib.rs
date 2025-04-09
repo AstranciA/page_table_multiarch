@@ -27,7 +27,7 @@ bitflags::bitflags! {
         /// The memory is uncached.
         const UNCACHED      = 1 << 5;
 
-        #[cfg(feature = "cow")]
+        #[cfg(feature = "COW")]
         /// Copy-on-write.
         const COW           = 1 << 6;
     }
