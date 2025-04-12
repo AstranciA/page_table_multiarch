@@ -153,10 +153,13 @@ impl GenericPTE for LA64PTE {
         self.0 = (self.0 & !Self::PHYS_ADDR_MASK) | (paddr.as_usize() as u64 & Self::PHYS_ADDR_MASK)
     }
     fn set_flags(&mut self, flags: MappingFlags, is_huge: bool) {
-        let mut flags = PTEFlags::from(flags) | PTEFlags::D;
+        let mut flags: PTEFlags = PTEFlags::from(flags) | PTEFlags::D;
         if is_huge {
             flags |= PTEFlags::GH;
         }
+        self.set_flags_arch(flags);
+    }
+    fn set_flags_arch(&mut self, flags: PTEFlags) {
         self.0 = (self.0 & Self::PHYS_ADDR_MASK) | flags.bits();
     }
     fn bits(self) -> usize {
@@ -171,6 +174,7 @@ impl GenericPTE for LA64PTE {
     fn is_huge(&self) -> bool {
         PTEFlags::from_bits_truncate(self.0).contains(PTEFlags::GH)
     }
+
     fn clear(&mut self) {
         self.0 = 0
     }
