@@ -33,6 +33,16 @@ bitflags::bitflags! {
     }
 }
 
+impl MappingFlags {
+    #[cfg(feature = "COW")]
+    pub fn mark_cow(flags: &mut Self) {
+        if flags.contains(Self::WRITE) {
+            flags.remove(Self::WRITE);
+            flags.insert(Self::COW);
+        }
+    }
+}
+
 impl Debug for MappingFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         Debug::fmt(&self.0, f)
