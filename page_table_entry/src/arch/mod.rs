@@ -6,7 +6,6 @@ pub mod riscv;
 #[cfg(any(target_arch = "riscv32", target_arch = "riscv64", doc))]
 pub use riscv::PTEFlags;
 
-
 #[cfg(any(target_arch = "aarch64", doc))]
 pub mod aarch64;
 
