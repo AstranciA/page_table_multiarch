@@ -35,11 +35,13 @@ bitflags::bitflags! {
 
 impl MappingFlags {
     #[cfg(feature = "COW")]
-    pub fn mark_cow(flags: &mut Self) {
+    pub fn mark_cow(flags: Self) -> Self {
+        let mut flags = flags.clone();
         if flags.contains(Self::WRITE) {
             flags.remove(Self::WRITE);
             flags.insert(Self::COW);
         }
+        flags
     }
 }
 
