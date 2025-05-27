@@ -43,6 +43,16 @@ impl MappingFlags {
         }
         flags
     }
+
+    pub fn protect(&self, flags: Self) -> Self {
+        let mut flags = flags.clone();
+        #[cfg(feature = "COW")]
+        {
+            flags |= *self & Self::COW;
+        }
+        flags |= *self & (Self::DEVICE | Self::USER);
+        flags
+    }
 }
 
 impl Debug for MappingFlags {
