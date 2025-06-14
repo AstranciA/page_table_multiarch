@@ -4,7 +4,7 @@
 
 mod arch;
 
-use core::fmt::{self, Debug};
+use core::fmt::{self, Debug, Display};
 use memory_addr::PhysAddr;
 
 pub use self::arch::*;
@@ -58,6 +58,30 @@ impl MappingFlags {
 impl Debug for MappingFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         Debug::fmt(&self.0, f)
+    }
+}
+
+impl Display for MappingFlags {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(
+            f,
+            "{}{}{}",
+            if self.contains(Self::READ) {
+                "r"
+            } else {
+                "-"
+            },
+            if self.contains(Self::WRITE) {
+                "w"
+            } else {
+                "-"
+            },
+            if self.contains(Self::EXECUTE) {
+                "x"
+            } else {
+                "-"
+            }
+        )
     }
 }
 
