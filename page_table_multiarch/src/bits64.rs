@@ -133,7 +133,7 @@ impl<M: PagingMetaData, PTE: GenericPTE, H: PagingHandler> PageTable64<M, PTE, H
     /// mapping is not present.
     pub fn query(&self, vaddr: M::VirtAddr) -> PagingResult<(PhysAddr, MappingFlags, PageSize)> {
         let (entry, size) = self.get_entry(vaddr)?;
-        if entry.is_unused() {
+        if !entry.is_present() {
             return Err(PagingError::NotMapped);
         }
         let off = size.align_offset(vaddr.into());
@@ -366,6 +366,44 @@ impl<M: PagingMetaData, PTE: GenericPTE, H: PagingHandler> PageTable64<M, PTE, H
         for pte in &mut table[start_idx..end_idx] {
             pte.clear();
         }
+    }
+
+    pub fn is_dirty(&self, vaddr: M::VirtAddr) -> PagingResult<bool> {
+        let (entry, _) = self.get_entry(vaddr)?;
+        if !entry.is_present() {
+            return Err(PagingError::NotMapped);
+        }
+
+        Ok(entry.is_dirty())
+    }
+
+    pub fn set_dirty(&mut self, vaddr: M::VirtAddr, dirty: bool) -> PagingResult<()> {
+        let (entry, _) = self.get_entry_mut(vaddr)?;
+        if !entry.is_present() {
+            return Err(PagingError::NotMapped);
+        }
+
+        entry.set_dirty(dirty);
+        Ok(())
+    }
+
+    pub fn is_accessed(&self, vaddr: M::VirtAddr) -> PagingResult<bool> {
+        let (entry, _) = self.get_entry(vaddr)?;
+        if !entry.is_present() {
+            return Err(PagingError::NotMapped);
+        }
+
+        Ok(entry.is_accessed())
+    }
+
+    pub fn set_accessed(&mut self, vaddr: M::VirtAddr, accessed: bool) -> PagingResult<()> {
+        let (entry, _) = self.get_entry_mut(vaddr)?;
+        if !entry.is_present() {
+            return Err(PagingError::NotMapped);
+        }
+
+        entry.set_accessed(accessed);
+        Ok(())
     }
 }
 
