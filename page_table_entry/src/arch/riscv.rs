@@ -29,7 +29,7 @@ bitflags::bitflags! {
         const D =   1 << 7;
         /// Two bits reserved for supervisor software, e.g. COW
         const RSW1 = 1 << 8;
-        const RSW2 = 1 << 8;
+        const RSW2 = 1 << 9;
     }
 }
 

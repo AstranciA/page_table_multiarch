@@ -66,7 +66,9 @@ impl PagingMetaData for LA64MetaData {
                 //
                 // When the operation indicated by op does not require an ASID, the
                 // general register rj should be set to r0.
-                asm!("dbar 0; invtlb 0x05, $r0, {reg}", reg = in(reg) vaddr.as_usize());
+                // FIXME: unsupport asid
+                //asm!("dbar 0; invtlb 0x05, $r0, {reg}", reg = in(reg) vaddr.as_usize());
+                asm!("dbar 0; invtlb 0x00, $r0, $r0");
             } else {
                 // op 0x0: Clear all page table entries
                 asm!("dbar 0; invtlb 0x00, $r0, $r0");

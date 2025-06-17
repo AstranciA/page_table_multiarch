@@ -46,6 +46,10 @@ bitflags::bitflags! {
         const P = 1 << 7;
         /// Whether the page is writable.
         const W = 1 << 8;
+        /// Reserved bit, can be used as COW
+        const RSW1 = 1 << 9;
+        const RSW2 = 1 << 10;
+        const RSW3 = 1 << 11;
         /// Designates a global mapping when using huge page.
         const G = 1 << 12;
         /// Whether the page is not readable.
@@ -83,6 +87,10 @@ impl From<PTEFlags> for MappingFlags {
                 ret |= Self::DEVICE;
             }
         }
+        #[cfg(feature = "COW")]
+        if f.contains(PTEFlags::RSW1) {
+            ret |= Self::COW;
+        }
         ret
     }
 }
@@ -113,6 +121,10 @@ impl From<MappingFlags> for PTEFlags {
                 // coherent cached,
                 ret |= Self::MATL;
             }
+        }
+        #[cfg(feature = "COW")]
+        if f.contains(MappingFlags::COW) {
+            ret |= Self::RSW1;
         }
         ret
     }
@@ -153,7 +165,7 @@ impl GenericPTE for LA64PTE {
         self.0 = (self.0 & !Self::PHYS_ADDR_MASK) | (paddr.as_usize() as u64 & Self::PHYS_ADDR_MASK)
     }
     fn set_flags(&mut self, flags: MappingFlags, is_huge: bool) {
-        let mut flags = PTEFlags::from(flags);
+        let mut flags: PTEFlags = PTEFlags::from(flags);
         if is_huge {
             flags |= PTEFlags::GH;
         }
